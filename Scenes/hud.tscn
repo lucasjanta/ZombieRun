@@ -1,0 +1,96 @@
+[gd_scene load_steps=9 format=3 uid="uid://cw8avwp1ypjy4"]
+
+[ext_resource type="FontFile" uid="uid://vt4tibo4chwv" path="res://Fonts/fibberish.ttf" id="1_aj5lw"]
+[ext_resource type="Script" path="res://Scenes/Area2D.gd" id="2_6fyn7"]
+[ext_resource type="Script" path="res://Scenes/SetCollision.gd" id="2_adeh5"]
+[ext_resource type="Texture2D" uid="uid://ck0yhxun7k02b" path="res://UI ICONS_WHITE_pixel art_Sprite Sheet.png" id="2_o5kdk"]
+
+[sub_resource type="GDScript" id="GDScript_fo4yd"]
+script/source = "extends CanvasLayer
+#var otherScript = preload(\"res://Scenes/CollisionArea.gd\")
+#var instanceScript = otherScript.new()
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8yyi6"]
+size = Vector2(26.6667, 26.6667)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_01ilw"]
+atlas = ExtResource("2_o5kdk")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g1rd5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_01ilw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
+
+[node name="HUD" type="CanvasLayer"]
+script = SubResource("GDScript_fo4yd")
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_right = 122.0
+offset_bottom = 35.0
+theme_override_fonts/font = ExtResource("1_aj5lw")
+theme_override_font_sizes/font_size = 40
+text = "SCORE: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighScoreLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -122.0
+offset_bottom = 35.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("1_aj5lw")
+theme_override_font_sizes/font_size = 40
+text = "HIGHSCORE: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpaceToPlayLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -179.0
+offset_top = -17.5
+offset_right = 179.0
+offset_bottom = 17.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_aj5lw")
+theme_override_font_sizes/font_size = 80
+text = "PRESS SPACE TO PLAY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Keys_Colision" type="Node" parent="."]
+script = ExtResource("2_adeh5")
+
+[node name="Area2D" type="Area2D" parent="Keys_Colision"]
+position = Vector2(580, 608)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2_6fyn7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Keys_Colision/Area2D"]
+scale = Vector2(3, 3)
+shape = SubResource("RectangleShape2D_8yyi6")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="Keys_Colision/Area2D"]
+sprite_frames = SubResource("SpriteFrames_g1rd5")

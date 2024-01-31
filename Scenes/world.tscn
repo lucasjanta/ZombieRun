@@ -1,0 +1,48 @@
+[gd_scene load_steps=9 format=3 uid="uid://d0stnet2tkcbi"]
+
+[ext_resource type="Script" path="res://Scenes/world.gd" id="1_71yqq"]
+[ext_resource type="Texture2D" uid="uid://csq0mj3fu083u" path="res://Background.png" id="1_mvn05"]
+[ext_resource type="PackedScene" uid="uid://dhuf6qpw87wwr" path="res://Scenes/main_character.tscn" id="3_8tkj2"]
+[ext_resource type="PackedScene" uid="uid://bjesqrwmwl0lf" path="res://Scenes/tile_map.tscn" id="3_s7vq7"]
+[ext_resource type="Shader" path="res://Scenes/tilesh.gdshader" id="5_8upsk"]
+[ext_resource type="PackedScene" uid="uid://bdxfgcttdqk6a" path="res://Scenes/bg.tscn" id="7_8n1xx"]
+[ext_resource type="PackedScene" uid="uid://cw8avwp1ypjy4" path="res://Scenes/hud.tscn" id="8_twfa6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v35ge"]
+shader = ExtResource("5_8upsk")
+shader_parameter/speed = 1.0
+shader_parameter/amplitude = 0.1
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_71yqq")
+metadata/_edit_vertical_guides_ = [3122.0, 576.0]
+metadata/_edit_horizontal_guides_ = [432.0]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 2.0
+offset_right = 1151.0
+offset_bottom = 650.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_mvn05")
+
+[node name="Player" parent="." instance=ExtResource("3_8tkj2")]
+position = Vector2(576, 464)
+
+[node name="TileMap" parent="." instance=ExtResource("3_s7vq7")]
+material = SubResource("ShaderMaterial_v35ge")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 328)
+
+[node name="Bg" parent="." instance=ExtResource("7_8n1xx")]
+
+[node name="HUD" parent="." instance=ExtResource("8_twfa6")]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
