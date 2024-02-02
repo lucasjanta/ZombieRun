@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://c61dy71dp1f4n"]
+
+[ext_resource type="Shader" path="res://Scenes/FGBG/scrolling_background.gdshader" id="1_cgd4a"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_acr58"]
+resource_local_to_scene = true
+shader = ExtResource("1_cgd4a")
+shader_parameter/scroll_speed = 0.2
+
+[node name="ScrollingBackground" type="TextureRect"]
+material = SubResource("ShaderMaterial_acr58")
+stretch_mode = 1

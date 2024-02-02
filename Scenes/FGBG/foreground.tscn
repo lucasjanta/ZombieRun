@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://bti8rexj5bfr2"]
+
+[ext_resource type="PackedScene" uid="uid://c61dy71dp1f4n" path="res://Scenes/FGBG/scrolling_background.tscn" id="1_tq4xq"]
+[ext_resource type="Shader" path="res://Scenes/FGBG/scrolling_background.gdshader" id="2_xpuxn"]
+[ext_resource type="Texture2D" uid="uid://c3624r48f5o4i" path="res://Bg/bg_ground.png" id="3_qx8v5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yvy5x"]
+resource_local_to_scene = true
+shader = ExtResource("2_xpuxn")
+shader_parameter/scroll_speed = 0.2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_urfcg"]
+size = Vector2(1352, 152)
+
+[node name="Foreground" type="Node2D"]
+position = Vector2(0, 488)
+
+[node name="ScrollingBackground" parent="." instance=ExtResource("1_tq4xq")]
+material = SubResource("ShaderMaterial_yvy5x")
+texture = ExtResource("3_qx8v5")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(676, 76)
+shape = SubResource("RectangleShape2D_urfcg")
