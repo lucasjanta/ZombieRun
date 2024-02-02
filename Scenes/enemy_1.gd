@@ -3,6 +3,7 @@ extends RigidBody2D
 var distancia : float
 var zombie_speed : float
 func _ready():
+	zombie_speed = randf_range(1,3)
 	pass # Replace with function body.
 
 

@@ -5,7 +5,7 @@ extends Node2D
 var newZombie = preload("res://Scenes/enemy_1.tscn")
 var zombie_instance = null
 var zombies_in_screen = []
-#var zombie_speed : float = 3
+var closest_zombie
 
 const PLAYER_START_POS := Vector2i(832, 376)
 const CAM_START_POS := Vector2i(832, 324)
@@ -22,7 +22,6 @@ var game_running : bool
 var anim_exec = false
 
 var player = null
-var enemy = null
 var distance_enemy_player
 
 var shoot_bar = preload("res://Scenes/shoot_bar.tscn")
@@ -47,20 +46,16 @@ func new_game():
 	$Player.position = PLAYER_START_POS
 	$Player.velocity = Vector2i(0, 0)
 	$Camera2D.position = CAM_START_POS 
-	#$TileMap.position = Vector2i(0, 0)
 	create_zombie()
 	$HUD.get_node("SpaceToPlayLabel").show()
-	
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+#EVERY FRAME 💚
 func _process(_delta):
 	if game_running:
-		#enemy1Speed = NORMAL_SPEED + score/SPEED_MODIFIER
 		score += speed
 		show_score()
 		player.position.x += speed
-		#if zombie_instance != null:
-			#zombie_instance.position.x += zombie_speed
+		#$Camera2D.position.x = find_distance(zombies_in_screen).distancia
 		$Camera2D.position.x = player.position.x
 		if speed > 0.4:
 			speed-= 0.01
@@ -77,8 +72,9 @@ func _process(_delta):
 			if Input.is_action_pressed("space"):
 				shoot_bar_instance.cursor_movement(player_shooting()) 
 			if Input.is_action_just_released("space"):
+				create_zombie()
 				print("resultado: ", mira)
-				kill_zombies(find_closest_enemy_pos(zombies_in_screen))
+				check_hit()
 				mira = -150
 				mira_mult = 1
 				shoot_bar_instance.queue_free()
@@ -99,37 +95,29 @@ func show_score():
 func acertou():
 	if speed < max_speed:
 		speed += 1.5
-	print(find_closest_enemy_pos(zombies_in_screen))
-	#print("TileMap Pos: ", $TileMap.global_position.x)
 func errou():
 	if speed > 3:
 		speed -= 3.0
 
 func create_zombie():
 	zombie_instance = newZombie.instantiate()
-	zombie_instance.zombie_speed = randf_range(2,8)
-	zombie_instance.position = Vector2i(460,400)
-	#zombie_speed = randf_range(speed, speed + 3)
+	#zombie_instance.zombie_speed = randf_range(2,8)
+	zombie_instance.position = Vector2i(player.position.x-600,400) 
 	add_child(zombie_instance)
 	zombies_in_screen.append(zombie_instance)
 	return zombie_instance
-	
-func find_closest_enemy_pos(zombies):
-	var closest
-	for i in range(zombies.size()):
-		distance_enemy_player = zombies[i].position.distance_to(player.position)
-		if closest == null:
-			closest = zombies[i]
-		elif distance_enemy_player < closest:
-			closest = zombies[i]
-		else:
-			return
-	return closest
 	
 func find_distance(array_zombies):
 	for zombie_enemy in array_zombies:
 		distance_enemy_player = zombie_enemy.position.distance_to(player.position)
 		zombie_enemy.distancia = distance_enemy_player
+	var menor_distancia = 10000
+	var zumbi_mais_proximo = null
+	for zombie_enemy in array_zombies:
+		if zombie_enemy.distancia < menor_distancia:
+			menor_distancia = zombie_enemy.distancia
+			closest_zombie = zombie_enemy
+	return closest_zombie
 
 func player_shooting():
 	speed = 0
@@ -138,8 +126,6 @@ func player_shooting():
 		shoot_bar_instance = shoot_bar.instantiate()
 		add_child(shoot_bar_instance)
 		shoot_bar_instance.position = player.position - Vector2(0,100)
-	
-	
 	if mira_mult == 1:
 		mira+= mira_mult * 2.5
 		if mira == 150:
@@ -149,12 +135,24 @@ func player_shooting():
 		if mira == -150:
 			mira_mult = 1
 	return mira
-	
-func kill_zombies(closest_zombie):
+
+func kill_zombies(choosen):
+	choosen.queue_free()
+	zombies_in_screen.erase(choosen)
+		
+func check_hit():
 	if mira >= -15 and mira <= 15:
-		closest_zombie.queue_free()
-	
-#func new_zombies_man(player_pos):
-	#
-	#if player_pos = 
-	#create_zombie()
+		for i in range(3):
+			kill_zombies(find_distance(zombies_in_screen))
+			print("morreu ", i+1)
+	if mira >= -55 and mira < -15 or mira > 15 and mira <= 55:
+		for i in range(2):
+			kill_zombies(find_distance(zombies_in_screen))
+			print("morreu ", i+1)
+	if mira >= -100 and mira < -55 or mira > 55 and mira <= 100:
+		for i in range(1):
+			kill_zombies(find_distance(zombies_in_screen))
+			print("morreu ", i+1)
+	if mira < -100 or mira > 100:
+		print("errou")
+

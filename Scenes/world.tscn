@@ -9,7 +9,6 @@
 [node name="World" type="Node2D"]
 script = ExtResource("1_71yqq")
 metadata/_edit_vertical_guides_ = [3122.0, 832.0, 464.0]
-metadata/_edit_horizontal_guides_ = [400.0]
 
 [node name="TileMap" parent="." instance=ExtResource("6_5ku22")]
 position = Vector2(0, -72)
@@ -21,7 +20,6 @@ position = Vector2(832, 424)
 position = Vector2(576, 328)
 
 [node name="Bg" parent="." instance=ExtResource("7_8n1xx")]
-visible = false
 
 [node name="HUD" parent="." instance=ExtResource("8_twfa6")]
 
