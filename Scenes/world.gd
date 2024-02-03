@@ -1,20 +1,23 @@
 extends Node2D
 
 @onready var sprite_2d = $Player/Sprite2D
+@onready var camera = $Camera2D
+@onready var tilemap = $TileMap
+@onready var hud = $HUD
 
 var newZombie = preload("res://Scenes/enemy_1.tscn")
 var zombie_instance = null
 var zombies_in_screen = []
 var closest_zombie
+var zombie_velocity
 
 const PLAYER_START_POS := Vector2i(832, 376)
 const CAM_START_POS := Vector2i(832, 324)
 
 var speed : float
-var speed_multiplier : float
 const INITIAL_SPEED : float = 0
-const SPEED_MODIFIER : int = 5000
 var score : int
+var combo : int = 0
 var max_speed : float = 6
 
 var screen_size : Vector2i
@@ -45,20 +48,19 @@ func new_game():
 	game_running = false
 	$Player.position = PLAYER_START_POS
 	$Player.velocity = Vector2i(0, 0)
-	$Camera2D.position = CAM_START_POS 
-	create_zombie()
-	$HUD.get_node("SpaceToPlayLabel").show()
+	camera.position = CAM_START_POS 
+	$HUD.get_node("EnterToPlayLabel").show()
 
 #EVERY FRAME 💚
-func _process(_delta):
+func _process(delta):
 	if game_running:
 		score += speed
 		show_score()
 		player.position.x += speed
 		#$Camera2D.position.x = find_distance(zombies_in_screen).distancia
-		$Camera2D.position.x = player.position.x
-		if speed > 0.4:
-			speed-= 0.01
+		camera_control(find_distance(zombies_in_screen))
+		if speed > 0:
+			speed-= 0.018
 		if(speed > 2 and not anim_exec):
 			sprite_2d.animation = "running"
 			sprite_2d.play("running")
@@ -67,12 +69,11 @@ func _process(_delta):
 			sprite_2d.animation = "idle"
 			sprite_2d.stop()
 			anim_exec = false
-		find_distance(zombies_in_screen)
+		
 		if player.position.x > PLAYER_START_POS.x:
 			if Input.is_action_pressed("space"):
 				shoot_bar_instance.cursor_movement(player_shooting()) 
 			if Input.is_action_just_released("space"):
-				create_zombie()
 				print("resultado: ", mira)
 				check_hit()
 				mira = -150
@@ -83,26 +84,34 @@ func _process(_delta):
 			
 			
 	else: 
-		if Input.is_action_just_pressed("space"):
+		if Input.is_action_just_pressed("enter"):
 			game_running = true
-			$HUD.get_node("SpaceToPlayLabel").hide()
-	
-			
-	
+			create_zombie(Vector2i(player.position.x-800,400), 3)
+			$HUD.get_node("EnterToPlayLabel").hide()
+
+
+
 func show_score():
 	$HUD.get_node("ScoreLabel").text = "SCORE: " + str(score)
+	$HUD.get_node("ComboLabel").text = "COMBO: " + str(combo)
+
+#func att_combo():
 	
 func acertou():
 	if speed < max_speed:
 		speed += 1.5
+		combo += 1
+		print()
+	
 func errou():
 	if speed > 3:
-		speed -= 3.0
+		speed -= 2.0
+	combo = 0
 
-func create_zombie():
+func create_zombie(start_position, start_velocity):
 	zombie_instance = newZombie.instantiate()
-	#zombie_instance.zombie_speed = randf_range(2,8)
-	zombie_instance.position = Vector2i(player.position.x-600,400) 
+	zombie_instance.zombie_speed = start_velocity
+	zombie_instance.position = start_position
 	add_child(zombie_instance)
 	zombies_in_screen.append(zombie_instance)
 	return zombie_instance
@@ -156,3 +165,28 @@ func check_hit():
 	if mira < -100 or mira > 100:
 		print("errou")
 
+func camera_control(inimigo_proximo):
+	if inimigo_proximo != null:
+		var distance = inimigo_proximo.distancia
+		print(distance)
+		var target_position_far = Vector2(700/distance, 700/distance)
+		var target_position_close = Vector2(1.5, 1.5)
+		if distance < 466:
+			camera.position.x = player.position.x - distance/3
+			camera.zoom = target_position_close
+		elif distance <= 700:
+			camera.position.x = player.position.x - distance/3
+			camera.zoom = target_position_far
+		else:
+			camera.position.x = player.position.x - 233
+			camera.zoom = target_position_far
+	if inimigo_proximo == null:
+		$Camera2D.position.x = player.position.x
+		
+func random_velocity():
+	if speed <= 2:
+		zombie_velocity = randf_range(speed, speed + 2)
+	if speed > 2 and speed <= max_speed:
+		zombie_velocity = randf_range(speed, speed + 2)
+	
+	return zombie_velocity

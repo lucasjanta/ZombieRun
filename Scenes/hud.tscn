@@ -53,7 +53,7 @@ vertical_alignment = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -122.0
+offset_left = -197.0
 offset_bottom = 35.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("1_aj5lw")
@@ -62,7 +62,22 @@ text = "HIGHSCORE: "
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SpaceToPlayLabel" type="Label" parent="."]
+[node name="ComboLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -244.0
+offset_top = 595.0
+offset_right = -47.0
+offset_bottom = 630.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("1_aj5lw")
+theme_override_font_sizes/font_size = 40
+text = "COMBO:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnterToPlayLabel" type="Label" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -76,7 +91,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("1_aj5lw")
 theme_override_font_sizes/font_size = 80
-text = "PRESS SPACE TO PLAY"
+text = "PRESS ENTER TO PLAY"
 horizontal_alignment = 1
 vertical_alignment = 1
 
