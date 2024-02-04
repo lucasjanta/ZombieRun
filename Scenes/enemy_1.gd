@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends Area2D
 # Called when the node enters the scene tree for the first time.
 var distancia : float
 var zombie_speed : float
@@ -11,3 +11,7 @@ func _ready():
 func _process(delta):
 	position.x += zombie_speed
 	pass
+
+
+func _on_body_entered(body):
+	pass # Replace with function body.

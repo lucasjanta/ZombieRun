@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scenes/player.gd" id="1_0r4ll"]
 [ext_resource type="Texture2D" uid="uid://brnhu0lg6gbxp" path="res://Sprites/Cyborg_idle.png" id="2_8on8f"]
-[ext_resource type="Texture2D" uid="uid://sir0lao4abfi" path="res://Cyborg_run.png" id="3_tub3l"]
+[ext_resource type="Texture2D" uid="uid://sir0lao4abfi" path="res://Sprites/Cyborg_run.png" id="3_27kna"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0f5qk"]
 atlas = ExtResource("2_8on8f")
@@ -21,27 +21,27 @@ atlas = ExtResource("2_8on8f")
 region = Rect2(145, 11, 22, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_64ek3"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(0, 12, 48, 36)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ffvn"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(48, 12, 48, 36)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pooe2"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(96, 12, 48, 36)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sjru4"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(144, 12, 48, 36)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c0fmy"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(192, 12, 48, 36)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0n3se"]
-atlas = ExtResource("3_tub3l")
+atlas = ExtResource("3_27kna")
 region = Rect2(240, 12, 48, 36)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_akumy"]

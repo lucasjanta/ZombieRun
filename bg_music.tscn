@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddpxpgq4cpx0e"]
+
+[ext_resource type="AudioStream" uid="uid://5dpqrg5tnqd1" path="res://Sounds/Arrival to Carcosa.mp3" id="1_p7q0v"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer"]
+stream = ExtResource("1_p7q0v")
+autoplay = true

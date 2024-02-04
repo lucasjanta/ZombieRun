@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://d0stnet2tkcbi"]
+[gd_scene load_steps=7 format=3 uid="uid://d0stnet2tkcbi"]
 
 [ext_resource type="Script" path="res://Scenes/world.gd" id="1_71yqq"]
 [ext_resource type="PackedScene" uid="uid://dhuf6qpw87wwr" path="res://Scenes/main_character.tscn" id="3_8tkj2"]
 [ext_resource type="PackedScene" uid="uid://bjesqrwmwl0lf" path="res://Scenes/tile_map.tscn" id="6_5ku22"]
+[ext_resource type="PackedScene" uid="uid://cpi7ysbfytfi6" path="res://Scenes/game_over.tscn" id="6_u5oc2"]
 [ext_resource type="PackedScene" uid="uid://bdxfgcttdqk6a" path="res://Scenes/bg.tscn" id="7_8n1xx"]
 [ext_resource type="PackedScene" uid="uid://cw8avwp1ypjy4" path="res://Scenes/hud.tscn" id="8_twfa6"]
 
@@ -18,9 +19,13 @@ position = Vector2(832, 424)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 328)
+position_smoothing_speed = 4.0
 
 [node name="Bg" parent="." instance=ExtResource("7_8n1xx")]
 
 [node name="HUD" parent="." instance=ExtResource("8_twfa6")]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="GameOver" parent="." instance=ExtResource("6_u5oc2")]
+process_mode = 2

@@ -125,7 +125,7 @@ animations = [{
 "speed": 9.0
 }]
 
-[node name="Enemy1" type="RigidBody2D"]
+[node name="Enemy1" type="Area2D"]
 collision_layer = 2
 script = ExtResource("1_x2cpc")
 
@@ -140,3 +140,5 @@ scale = Vector2(3.59375, 3.59375)
 sprite_frames = SubResource("SpriteFrames_41037")
 autoplay = "default"
 frame_progress = 0.0162842
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
