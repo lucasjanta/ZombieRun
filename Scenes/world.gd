@@ -11,6 +11,10 @@ var zombies_in_screen = []
 var closest_zombie
 var zombie_velocity
 
+var powerShot = preload("res://Scenes/power_anim.tscn")
+var power_instance = null
+var power_in_screen = []
+
 const PLAYER_START_POS := Vector2i(832, 376)
 const CAM_START_POS := Vector2i(832, 324)
 
@@ -54,6 +58,8 @@ func new_game():
 	for zombies in zombies_in_screen:
 		zombies.queue_free()
 	zombies_in_screen.clear()
+	for powers in power_in_screen:
+		powers.queue_free()
 	$Player.position = PLAYER_START_POS
 	$Player.velocity = Vector2i(0, 0)
 	camera.position = CAM_START_POS 
@@ -69,35 +75,20 @@ func _process(_delta):
 		#$Camera2D.position.x = find_distance(zombies_in_screen).distancia
 		camera_control(find_distance(zombies_in_screen))
 		hit_zombie(find_distance(zombies_in_screen))
-		if speed > 0:
-			speed-= 0.012
-		if(speed > 2 and not anim_exec):
-			sprite_2d.animation = "running"
-			sprite_2d.play("running")
-			anim_exec = true
-		elif (speed < 2 and anim_exec):
-			sprite_2d.animation = "idle"
-			sprite_2d.stop()
-			anim_exec = false
+		speed_control()
 		
 		if player.position.x > PLAYER_START_POS.x:
 			if Input.is_action_pressed("space"):
 				if find_distance(zombies_in_screen).distancia < 900:
 					shoot_bar_instance.cursor_movement(player_shooting())
 					shoot_bar_instance.position = Vector2i(player.position.x - 100, player.position.y - 100)
-			if Input.is_action_just_released("space"):
-				print("resultado: ", mira)
-				check_hit()
-				mira = -150
-				mira_mult = 1
-				if shoot_bar_instance != null:
-					shoot_bar_instance.queue_free()
-				sprite_2d.flip_h = false
-				#shoot_bar_instance = null
-				create_zombie(Vector2i(closest_zombie.position.x - 400,player.position.y), random_velocity())
-				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
-				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
-			
+					sprite_2d.animation = "spell"
+					sprite_2d.play("spell")
+					#if sprite_2d.
+					
+				else:
+					print("muito distante")
+			release_space()
 			
 	else: 
 		if Input.is_action_just_pressed("enter"):
@@ -171,24 +162,42 @@ func player_shooting():
 	return mira
 
 func kill_zombies(choosen):
-	choosen.queue_free()
-	zombies_in_screen.erase(choosen)
+	var sprite_enemy = choosen.get_node("Sprite2D")
+	choosen.zombie_speed = 0
+	print(sprite_enemy)
+	sprite_enemy.animation = "death"
+	sprite_enemy.play("death")
+	power_instance = powerShot.instantiate()
+	power_instance.position = choosen.position
+	add_child(power_instance)
+	power_in_screen.append(power_instance)
+	
+	if sprite_enemy.animation == "death" and sprite_enemy.frame == 6:
+		print("ta passando")
+		choosen.queue_free()
+		zombies_in_screen.erase(choosen)
 		
 func check_hit():
+	var opt
 	if mira >= -15 and mira <= 15:
-		for i in range(3):
-			kill_zombies(find_distance(zombies_in_screen))
-			print("morreu ", i+1)
+		print("morre 3")
+		kill_zombies(find_distance(zombies_in_screen))
+		kill_zombies(find_distance(zombies_in_screen))
+		kill_zombies(find_distance(zombies_in_screen))
+		opt = 3
 	if mira >= -55 and mira < -15 or mira > 15 and mira <= 55:
-		for i in range(2):
-			kill_zombies(find_distance(zombies_in_screen))
-			print("morreu ", i+1)
+		print("morre 2")
+		kill_zombies(find_distance(zombies_in_screen))
+		kill_zombies(find_distance(zombies_in_screen))
+		opt = 2
 	if mira >= -100 and mira < -55 or mira > 55 and mira <= 100:
-		for i in range(1):
-			kill_zombies(find_distance(zombies_in_screen))
-			print("morreu ", i+1)
+		print("morre1")
+		kill_zombies(find_distance(zombies_in_screen))
+		opt = 1
 	if mira < -100 or mira > 100:
 		print("errou")
+		
+	return opt
 
 func camera_control(inimigo_proximo):
 	if inimigo_proximo != null:
@@ -216,3 +225,42 @@ func game_over():
 	get_tree().paused = true
 	game_running = false
 	$GameOver.show()
+
+func speed_control():
+	if speed > 0:
+			speed-= 0.012
+	if speed > 2 and !anim_exec:
+		sprite_2d.animation = "running"
+		sprite_2d.play("running")
+		anim_exec = true
+	if (speed <= 2):
+		sprite_2d.animation = "idle"
+		sprite_2d.play()
+		anim_exec = false
+	
+	
+func release_space():
+	if Input.is_action_just_released("space"):
+				print("resultado: ", mira)
+				
+				check_hit()
+				player.power.play()
+				mira = -150
+				mira_mult = 1
+				if shoot_bar_instance != null:
+					shoot_bar_instance.queue_free()
+				sprite_2d.flip_h = false
+				#shoot_bar_instance = null
+				create_zombie(Vector2i(closest_zombie.position.x - 400,player.position.y), random_velocity())
+				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
+				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
+				anim_exec = false
+				speed_control()
+				
+				#sprite_2d.animation = "idle"
+				#sprite_2d.play("idle")
+				
+	
+#func visual_effect_hit(option):
+	#if option == 1:
+		

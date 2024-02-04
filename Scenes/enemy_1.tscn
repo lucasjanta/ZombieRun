@@ -1,11 +1,41 @@
-[gd_scene load_steps=21 format=3 uid="uid://cfldxw4c1naxq"]
+[gd_scene load_steps=30 format=3 uid="uid://cfldxw4c1naxq"]
 
 [ext_resource type="Texture2D" uid="uid://bggt4xk8bpkpf" path="res://Idle.png" id="1_r1igw"]
 [ext_resource type="Script" path="res://Scenes/enemy_1.gd" id="1_x2cpc"]
 [ext_resource type="Texture2D" uid="uid://b46alsmmbddfx" path="res://Walk.png" id="2_4vfmo"]
+[ext_resource type="Texture2D" uid="uid://b5vlo1j3uqvga" path="res://Sprites/Death.png" id="2_wndpn"]
+[ext_resource type="AudioStream" uid="uid://b8mroqfvh131i" path="res://Sounds/ESDZ1 - BREATH_OUT_5.wav" id="5_x0s3k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n7fjd"]
 size = Vector2(47, 89)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jq05k"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b1phk"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i2wf0"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(64, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7d72m"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(96, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x0vtw"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2knyi"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(160, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4224p"]
+atlas = ExtResource("2_wndpn")
+region = Rect2(192, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fpmaw"]
 atlas = ExtResource("1_r1igw")
@@ -69,6 +99,32 @@ region = Rect2(288, 64, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_41037"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jq05k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b1phk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2wf0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7d72m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x0vtw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2knyi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4224p")
+}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fpmaw")
@@ -138,7 +194,13 @@ texture_filter = 1
 position = Vector2(-0.499996, -10.5)
 scale = Vector2(3.59375, 3.59375)
 sprite_frames = SubResource("SpriteFrames_41037")
+animation = &"death"
 autoplay = "default"
-frame_progress = 0.0162842
+frame = 6
+frame_progress = 1.0
+
+[node name="breath" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_x0s3k")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="animation_finished" from="Sprite2D" to="." method="_on_sprite_2d_animation_finished"]

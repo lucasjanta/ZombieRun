@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3 uid="uid://bntwf8e0x1ort"]
+
+[ext_resource type="Texture2D" uid="uid://rqgtp0jbca5p" path="res://Sprites/Purple Effect Bullet Impact Explosion 32x32.png" id="1_n3aao"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8coi"]
+atlas = ExtResource("1_n3aao")
+region = Rect2(512, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdv3a"]
+atlas = ExtResource("1_n3aao")
+region = Rect2(544, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_37lvb"]
+atlas = ExtResource("1_n3aao")
+region = Rect2(576, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8nvor"]
+atlas = ExtResource("1_n3aao")
+region = Rect2(608, 384, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ka4xr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8coi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mdv3a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_37lvb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8nvor")
+}],
+"loop": false,
+"name": &"explosion",
+"speed": 7.0
+}]
+
+[node name="Node2D" type="AnimatedSprite2D"]
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_ka4xr")
+animation = &"explosion"
+autoplay = "explosion"
+frame = 3
+frame_progress = 1.0
