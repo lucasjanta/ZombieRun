@@ -182,6 +182,7 @@ animations = [{
 }]
 
 [node name="Enemy1" type="Area2D"]
+z_index = 8
 collision_layer = 2
 script = ExtResource("1_x2cpc")
 

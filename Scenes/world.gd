@@ -37,6 +37,17 @@ var shoot_bar_instance = null
 var mira : float =  0.0
 var mira_mult = 1
 
+var too_far = preload("res://Scenes/too_far.tscn")
+var too_far_instance = null
+
+var new_tileMap = preload("res://Scenes/tile_map.tscn")
+var new_tileMap_instance = null
+var tile_number : int
+var tilemaps_added = []
+
+var new_point = preload("res://Scenes/pontuation.tscn")
+var new_point_instance = null
+var all_points = []
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	player = get_node("Player")
@@ -49,8 +60,10 @@ func _ready() -> void:
 	new_game()
 
 func new_game():
+	speed = 0
 	score = 0
 	combo = 0
+	tile_number = 1
 	show_score()
 	game_running = false
 	get_tree().paused = false
@@ -58,8 +71,19 @@ func new_game():
 	for zombies in zombies_in_screen:
 		zombies.queue_free()
 	zombies_in_screen.clear()
-	for powers in power_in_screen:
-		powers.queue_free()
+	if power_in_screen != null:
+		for powers in power_in_screen:
+			powers.queue_free()
+		power_in_screen.clear()
+	if all_points != null:
+		for point in all_points:
+			point.queue_free()
+		all_points.clear()
+	if tilemaps_added != null:
+		for tilemapzinhos in tilemaps_added:
+			tilemapzinhos.queue_free()
+		tilemaps_added.clear()
+		
 	$Player.position = PLAYER_START_POS
 	$Player.velocity = Vector2i(0, 0)
 	camera.position = CAM_START_POS 
@@ -69,17 +93,19 @@ func new_game():
 #EVERY FRAME 💚
 func _process(_delta):
 	if game_running:
-		score += speed
+		score += speed / 2
 		show_score()
 		player.position.x += speed
 		#$Camera2D.position.x = find_distance(zombies_in_screen).distancia
-		camera_control(find_distance(zombies_in_screen))
-		hit_zombie(find_distance(zombies_in_screen))
-		speed_control()
-		
+		camera_control(find_distance(zombies_in_screen)) #camera movement
+		hit_zombie(find_distance(zombies_in_screen)) #Die
+		speed_control(find_distance(zombies_in_screen).distancia)
+		more_floor(player.position.x)
 		if player.position.x > PLAYER_START_POS.x:
 			if Input.is_action_pressed("space"):
 				if find_distance(zombies_in_screen).distancia < 900:
+					if too_far_instance != null:
+						too_far_instance.queue_free()
 					shoot_bar_instance.cursor_movement(player_shooting())
 					shoot_bar_instance.position = Vector2i(player.position.x - 100, player.position.y - 100)
 					sprite_2d.animation = "spell"
@@ -88,7 +114,12 @@ func _process(_delta):
 					
 				else:
 					print("muito distante")
-			release_space()
+					if too_far_instance == null:
+						too_far_instance = too_far.instantiate()
+						add_child(too_far_instance)
+				if too_far_instance != null:
+					too_far_instance.position = Vector2i(player.position.x - 50, player.position.y - 150)
+			release_space(find_distance(zombies_in_screen).distancia)
 			
 	else: 
 		if Input.is_action_just_pressed("enter"):
@@ -152,12 +183,12 @@ func player_shooting():
 		add_child(shoot_bar_instance)
 		#shoot_bar_instance.position = Vector2i(player.position.x - 100, player.position.y - 100)
 	if mira_mult == 1:
-		mira+= mira_mult * 2.5
-		if mira == 150:
+		mira+= mira_mult * 4
+		if mira >= 150:
 			mira_mult = -1
 	if mira_mult == -1:
-		mira+= mira_mult * 2.5
-		if mira == -150:
+		mira+= mira_mult * 4
+		if mira <= -150:
 			mira_mult = 1
 	return mira
 
@@ -173,7 +204,6 @@ func kill_zombies(choosen):
 	power_in_screen.append(power_instance)
 	
 	if sprite_enemy.animation == "death" and sprite_enemy.frame == 6:
-		print("ta passando")
 		choosen.queue_free()
 		zombies_in_screen.erase(choosen)
 		
@@ -184,18 +214,22 @@ func check_hit():
 		kill_zombies(find_distance(zombies_in_screen))
 		kill_zombies(find_distance(zombies_in_screen))
 		kill_zombies(find_distance(zombies_in_screen))
+		player.power.play()
 		opt = 3
 	if mira >= -55 and mira < -15 or mira > 15 and mira <= 55:
 		print("morre 2")
 		kill_zombies(find_distance(zombies_in_screen))
 		kill_zombies(find_distance(zombies_in_screen))
+		player.power.play()
 		opt = 2
 	if mira >= -100 and mira < -55 or mira > 55 and mira <= 100:
 		print("morre1")
 		kill_zombies(find_distance(zombies_in_screen))
+		player.power.play()
 		opt = 1
 	if mira < -100 or mira > 100:
 		print("errou")
+		opt = 0
 		
 	return opt
 
@@ -226,7 +260,7 @@ func game_over():
 	game_running = false
 	$GameOver.show()
 
-func speed_control():
+func speed_control(dist):
 	if speed > 0:
 			speed-= 0.012
 	if speed > 2 and !anim_exec:
@@ -237,30 +271,79 @@ func speed_control():
 		sprite_2d.animation = "idle"
 		sprite_2d.play()
 		anim_exec = false
+	if speed > 0 and dist > 900:
+		speed-= 0.02
 	
 	
-func release_space():
+func release_space(distancia):
 	if Input.is_action_just_released("space"):
-				print("resultado: ", mira)
-				
-				check_hit()
-				player.power.play()
+		if distancia < 900:
+				visual_effect_hit(check_hit())
 				mira = -150
 				mira_mult = 1
 				if shoot_bar_instance != null:
 					shoot_bar_instance.queue_free()
+				if too_far_instance != null:
+					too_far_instance.queue_free()
 				sprite_2d.flip_h = false
 				#shoot_bar_instance = null
 				create_zombie(Vector2i(closest_zombie.position.x - 400,player.position.y), random_velocity())
 				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
 				create_zombie(Vector2i(closest_zombie.position.x-400,player.position.y), random_velocity())
 				anim_exec = false
-				speed_control()
-				
-				#sprite_2d.animation = "idle"
-				#sprite_2d.play("idle")
+				speed_control(find_distance(zombies_in_screen).distancia)
+		if distancia >= 900:
+			if shoot_bar_instance != null:
+					shoot_bar_instance.queue_free()
+			if too_far_instance != null:
+				too_far_instance.queue_free()
+			sprite_2d.flip_h = false
 				
 	
-#func visual_effect_hit(option):
-	#if option == 1:
+func visual_effect_hit(option):
+	if option == 0:
+		print("errou")
+		new_point_instance = new_point.instantiate()
+		new_point_instance.get_node("pontosText").text = "MISS"
+		new_point_instance.position = Vector2i(player.position.x, player.position.y - 200)
+		add_child(new_point_instance)
+		all_points.append(new_point_instance)
 		
+	if option == 1:
+		print("oi")
+		score += 200
+		new_point_instance = new_point.instantiate()
+		new_point_instance.get_node("pontosText").text = "+200pts"
+		new_point_instance.position = Vector2i(player.position.x, player.position.y - 200)
+		add_child(new_point_instance)
+		all_points.append(new_point_instance)
+		
+	if option == 2:
+		print("oi2")
+		score += 500
+		new_point_instance = new_point.instantiate()
+		new_point_instance.get_node("pontosText").text = "+500pts"
+		new_point_instance.position = Vector2i(player.position.x, player.position.y - 200)
+		add_child(new_point_instance)
+		all_points.append(new_point_instance)
+	if option == 3:
+		print("oi3")
+		score += 1000
+		new_point_instance = new_point.instantiate()
+		new_point_instance.get_node("pontosText").text = "+1000pts"
+		new_point_instance.position = Vector2i(player.position.x, player.position.y - 200)
+		add_child(new_point_instance)
+		all_points.append(new_point_instance)
+		
+func more_floor(distanciaJogador):
+	if distanciaJogador > 6000 * tile_number:
+		new_tileMap_instance = new_tileMap.instantiate()
+		new_tileMap_instance.position = Vector2i(6472 * tile_number, -80)
+		add_child(new_tileMap_instance)
+		tilemaps_added.append(new_tileMap_instance)
+		tile_number += 1
+		
+	
+func adjust_velocity(dist):
+	if speed > 0 and dist > 900:
+		speed-= 0.001

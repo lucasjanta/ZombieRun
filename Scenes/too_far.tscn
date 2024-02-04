@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1yyqoi8487qw"]
+
+[ext_resource type="Script" path="res://Scenes/too_far.gd" id="1_2lptx"]
+[ext_resource type="FontFile" uid="uid://vt4tibo4chwv" path="res://Fonts/fibberish.ttf" id="1_6f0qr"]
+
+[node name="too_far" type="Node2D"]
+script = ExtResource("1_2lptx")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_6f0qr")
+text = "OUT OF RANGE"

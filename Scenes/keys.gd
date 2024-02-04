@@ -1,9 +1,9 @@
 extends Area2D
 
-var imagens = [preload("res://W_key.png"), 
-			   preload("res://S_key.png"),
-			   preload("res://A_key.png"),
-			   preload("res://D_key.png")]
+var imagens = [preload("res://Sprites/Keys/W.png"), 
+			   preload("res://Sprites/Keys/S.png"), 
+			   preload("res://Sprites/Keys/A.png"), 
+			   preload("res://Sprites/Keys/D.png")] 
 
 
 func random_key(objeto : Sprite2D) -> void:

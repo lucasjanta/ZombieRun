@@ -114,7 +114,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"spell",
-"speed": 10.0
+"speed": 18.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -159,6 +159,8 @@ scale = Vector2(2.03815, 2.03815)
 sprite_frames = SubResource("SpriteFrames_akumy")
 animation = &"spell"
 autoplay = "idle"
+frame = 9
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(4, 0)
